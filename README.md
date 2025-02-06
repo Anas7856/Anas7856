@@ -1,69 +1,79 @@
-### Hi there, I'm Anas Zahoor 👋
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Snake Game</title>
+    <style>
+        body {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            background-color: #282c34;
+        }
+        canvas {
+            border: 2px solid white;
+        }
+    </style>
+</head>
+<body>
+    <canvas id="gameCanvas" width="400" height="400"></canvas>
+    <script>
+        const canvas = document.getElementById("gameCanvas");
+        const ctx = canvas.getContext("2d");
 
-![Profile Views](https://komarev.com/ghpvc/?username=anaszahoor&color=blue)
+        const box = 20;
+        let snake = [{ x: 10 * box, y: 10 * box }];
+        let food = { x: Math.floor(Math.random() * 20) * box, y: Math.floor(Math.random() * 20) * box };
+        let direction = "RIGHT";
 
-## 🚀 About Me
+        document.addEventListener("keydown", changeDirection);
 
-👨‍💻 Frontend Developer | ReactJS | SCSS | Bootstrap  
-🌱 Learning MongoDB & Express.js (Backend Dev)  
-🔥 Passionate about Web Development & UI/UX Design
+        function changeDirection(event) {
+            const key = event.keyCode;
+            if (key == 37 && direction !== "RIGHT") direction = "LEFT";
+            else if (key == 38 && direction !== "DOWN") direction = "UP";
+            else if (key == 39 && direction !== "LEFT") direction = "RIGHT";
+            else if (key == 40 && direction !== "UP") direction = "DOWN";
+        }
 
----
+        function draw() {
+            ctx.fillStyle = "black";
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
 
-## 🌐 Interactive Portfolio
+            ctx.fillStyle = "red";
+            ctx.fillRect(food.x, food.y, box, box);
 
-🚀 **[Visit My Portfolio](https://f6db0.firebaseapp.com)** 🚀
+            ctx.fillStyle = "lime";
+            snake.forEach((segment, index) => {
+                ctx.fillRect(segment.x, segment.y, box, box);
+                if (index === 0) ctx.strokeRect(segment.x, segment.y, box, box);
+            });
 
----
+            let head = { ...snake[0] };
+            if (direction === "LEFT") head.x -= box;
+            if (direction === "UP") head.y -= box;
+            if (direction === "RIGHT") head.x += box;
+            if (direction === "DOWN") head.y += box;
 
-## 🛠️ Tech Stack
+            if (head.x === food.x && head.y === food.y) {
+                food = { x: Math.floor(Math.random() * 20) * box, y: Math.floor(Math.random() * 20) * box };
+            } else {
+                snake.pop();
+            }
 
-### Frontend  
-<p>
-  <img src="https://img.shields.io/badge/React-20232A?style=for-the-badge&logo=react&logoColor=61DAFB" alt="React"/>
-  <img src="https://img.shields.io/badge/SCSS-CC6699?style=for-the-badge&logo=sass&logoColor=white" alt="SCSS"/>
-  <img src="https://img.shields.io/badge/Bootstrap-563D7C?style=for-the-badge&logo=bootstrap&logoColor=white" alt="Bootstrap"/>
-</p>
+            snake.unshift(head);
 
-### Backend & Database  
-<p>
-  <img src="https://img.shields.io/badge/Node.js-43853D?style=for-the-badge&logo=node.js&logoColor=white" alt="Node.js"/>
-  <img src="https://img.shields.io/badge/Express.js-000000?style=for-the-badge&logo=express&logoColor=white" alt="Express.js"/>
-  <img src="https://img.shields.io/badge/MongoDB-4EA94B?style=for-the-badge&logo=mongodb&logoColor=white" alt="MongoDB"/>
-  <img src="https://img.shields.io/badge/Firebase-ffca28?style=for-the-badge&logo=firebase&logoColor=black" alt="Firebase"/>
-</p>
+            if (head.x < 0 || head.x >= canvas.width || head.y < 0 || head.y >= canvas.height ||
+                snake.slice(1).some(segment => segment.x === head.x && segment.y === head.y)) {
+                clearInterval(game);
+                alert("Game Over");
+                location.reload();
+            }
+        }
 
----
-
-## 📊 GitHub Stats
-
-<div align="center">
-  <img height="180em" src="https://github-readme-stats.vercel.app/api?username=anaszahoor&show_icons=true&theme=radical"/>
-  <img height="180em" src="https://github-readme-streak-stats.herokuapp.com/?user=anaszahoor&theme=radical"/>
-</div>
-
----
-
-## 🏆 GitHub Trophies
-
-![GitHub Trophies](https://github-profile-trophy.vercel.app/?username=anaszahoor&theme=radical&no-frame=false&no-bg=false&margin-w=4)
-
----
-
-## 🚀 Connect With Me
-
-<p align="center">
-  <a href="https://f6db0.firebaseapp.com" target="_blank">
-    <img src="https://img.shields.io/badge/Portfolio-000?style=for-the-badge&logo=vercel&logoColor=white" alt="Portfolio"/>
-  </a>
-  <a href="https://linkedin.com/in/anaszahoor" target="_blank">
-    <img src="https://img.shields.io/badge/LinkedIn-0A66C2?style=for-the-badge&logo=linkedin&logoColor=white" alt="LinkedIn"/>
-  </a>
-  <a href="https://twitter.com/anaszahoor" target="_blank">
-    <img src="https://img.shields.io/badge/Twitter-1DA1F2?style=for-the-badge&logo=twitter&logoColor=white" alt="Twitter"/>
-  </a>
-</p>
-
----
-
-⭐️ Feel free to check out my repositories and contribute! Let's build amazing projects together!
+        let game = setInterval(draw, 100);
+    </script>
+</body>
+</html>
